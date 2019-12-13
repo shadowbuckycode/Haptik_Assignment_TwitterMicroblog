@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        Hi {{ user.username }}!
+        <a href="{% url 'tweet_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+        <p><a href="{% url 'logout' %}">logout</a></p>
+        {% if user.id !=  pk %}
+            <button id="button_follow">Follow</button>
+        {% endif %}
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">login</a>
+    {% endif %}
+    {% for tweet in tweets %}
+        <div class="tweet">
+            <div>
+                {{ tweet.author }}
+            </div>
+            <div class="date">
+                {{ tweet.created_at }}
+            </div>
+            <p>{{ tweet.text|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+<script>
+    $("#button_follow").on('click', function () {
+        console.log('Clicked')
+        $.ajax({
+            url: "{% url 'follow' pk=user.id pk2=pk %}",
+            data: {},
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    console.log('Clicked')
+
+                    alert("ajax call success.");
+                    // here you update the HTML to change the active to innactive
+                    $("#button_follow").attr('value', 'Unfollow');
+                } else {
+                    alert("ajax call not success.");
+                    $("#button_follow").attr('value', 'Follow');
+                }
+            }
+        });
+
+    });
+</script>

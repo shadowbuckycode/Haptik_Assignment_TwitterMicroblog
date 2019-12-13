@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        Hi {{ user.username }}!
+        <a href="{% url 'user_profile' user.id%}" class="top-menu">Hi {{ user.username }}!</a>
+        <a href="{% url 'tweet_new' %}" class="top-menu"><span class="glyphicon glyphicon-plus"></span></a>
+
+        <p><a href="{% url 'logout' %}">logout</a></p>
+    {% else %}
+        <p>You are not logged in</p>
+        <a href="{% url 'login' %}">login</a>
+    {% endif %}
+    {% for tweet in tweets %}
+        <div class="tweet">
+        <div>
+            <a href="{% url 'user_profile' tweet.author.id%}" class="top-menu">{{ tweet.author }}</a>
+        </div>
+            <div class="date">
+                {{ tweet.created_at }}
+            </div>
+            <p>{{ tweet.text|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}
